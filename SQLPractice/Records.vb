@@ -3,7 +3,9 @@
 Public Class Records
 
 #Region "Var and Consts"
+    'The DBConnectionString must be edited to the correct file directory for the program to function
     Private Const DBConnectionString As String = "Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""C:\Users\jjackson\Documents\Visual Studio 2015\Projects\SQLPractice\SQLPractice\TestDB.mdf"";Integrated Security=True"
+    'Shows exceptions and messages for DB connections
     Private Const Debug As Boolean = True
     Dim connection As SqlConnection
 #End Region
@@ -75,7 +77,6 @@ Public Class Records
     'Adds a new record into the DB
     Public Sub AddRecord()
         Dim foreName, lastName, DoB As String
-        DBOpen()
         Try
             Console.WriteLine("Enter Forename:")
             foreName = Console.ReadLine()
@@ -96,6 +97,7 @@ Public Class Records
             End Try
             Dim format As String = "INSERT INTO TestTable( ForeName, LastName, DoB) VALUES( {0}{1}{0}, {0}{2}{0}, {0}{3}{0})"
             Dim rowInput As String = String.Format(format, Chr(39), foreName, lastName, DoB)
+            DBOpen()
             Dim Command As SqlCommand = New SqlCommand(rowInput, connection)
             Command.BeginExecuteNonQuery()
         Catch ex As Exception
@@ -108,20 +110,41 @@ Public Class Records
     End Sub
 
     'Searchs for a record in the DB based on a column
-    Private Function Search(input As String, column As Char)
-        Dim results As ArrayList
-
+    Private Function SearchRecords(input As String, column As String)
+        Dim results As New ArrayList()
+        Dim colName, commandString As String
+        Select Case column
+            Case "f"
+                colName = "ForeName"
+            Case "s"
+                colName = "LastName"
+            Case Else
+                Throw New Exception("Invalid selection")
+        End Select
+        Dim format As String = "SELECT {1} FROM TestTable WHERE {0}{2}{0}"
+        DBOpen()
+        commandString = String.Format(format, Chr(39), colName, input)
+        Dim command As SqlCommand = New SqlCommand(commandString, connection)
+        Dim reader As SqlDataReader = command.ExecuteReader
+        While reader.Read
+            Console.WriteLine(reader(0))
+            'results.Add(reader(0).ToString & reader(1).ToString & reader(2).ToString & reader(3).ToString)
+        End While
         Return results
     End Function
 
     'Deletes a record from the DB
     Public Sub DeleteRecord()
-        DBOpen()
         Dim searchTerm As String
         Try
             Console.WriteLine("Search using [f]orename or [s]urname?")
-            Dim userInput As Char = Console.ReadKey.KeyChar
-            Search(searchTerm, userInput)
+            Dim userInput As String = Console.ReadKey.KeyChar
+            Console.Beep()
+            searchTerm = Console.ReadLine()
+            If ValidateUserInput(searchTerm) = False Then
+                Throw New Exception("Invalid input")
+            End If
+            SearchRecords(searchTerm, userInput)
         Catch ex As Exception
             If Debug Then
                 Console.WriteLine(ex.Message)

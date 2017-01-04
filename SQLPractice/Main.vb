@@ -9,6 +9,7 @@
             MainMenu.TitlePrint()
             MainMenu.PrintMenu()
             userInput = Console.ReadKey().KeyChar
+            Console.Beep()
             Select Case userInput
                 Case "1"
                     Record.AddRecord()
