@@ -1,7 +1,7 @@
 ﻿Module Main
 
     Sub Main()
-        Console.BufferHeight() = 800
+        Console.BufferHeight() = 2600
         Dim MainMenu As New Menu()
         Dim Record As New Records()
         Dim userInput As Char
@@ -25,7 +25,7 @@
                 Case Chr(27)
                     Exit Do
                 Case Else
-                    Console.WriteLine(" is not a valid input...")
+                    Console.WriteLine(userInput & " is not a valid input...")
                     Console.ReadKey()
             End Select
         Loop

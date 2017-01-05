@@ -52,8 +52,22 @@ Public Class Records
     'Prints all records in the DB
     Public Sub PrintRecords()
         Try
+            Console.WriteLine("Order by [i]d, [f]orename, [s]urname or [d]ate of birth?")
+            Dim sortByCol As String = Console.ReadKey.KeyChar
             DBOpen()
-            Dim command As SqlCommand = New SqlCommand("SELECT * FROM TestTable", connection)
+            Dim command As SqlCommand
+            Select Case sortByCol
+                Case "i"
+                    command = New SqlCommand("SELECT * FROM TestTable", connection)
+                Case "f"
+                    command = New SqlCommand("SELECT * FROM TestTable ORDER BY ForeName", connection)
+                Case "s"
+                    command = New SqlCommand("SELECT * FROM TestTable ORDER BY LastName", connection)
+                Case "d"
+                    command = New SqlCommand("SELECT * FROM TestTable ORDER BY DoB", connection)
+                Case Else
+                    command = New SqlCommand("SELECT * FROM TestTable", connection)
+            End Select
             Dim reader As SqlDataReader = command.ExecuteReader
             Console.WriteLine("ID Forename       Surname        DoB")
             While reader.Read
