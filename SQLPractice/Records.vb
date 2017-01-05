@@ -22,9 +22,8 @@ Public Class Records
         Try
             InitializeConnection()
             connection.Open()
-            Console.WriteLine()
             If Debug Then
-                Console.WriteLine("DB Connection opened successfully")
+                Console.WriteLine("+DB Connection opened successfully")
             End If
         Catch ex As Exception
             Console.WriteLine()
@@ -40,7 +39,7 @@ Public Class Records
             connection.Close()
             connection.Dispose()
             If Debug Then
-                Console.WriteLine("DB Connection closed successfully")
+                Console.WriteLine("-DB Connection closed successfully")
             End If
             Console.ReadKey()
         Catch ex As Exception
@@ -56,13 +55,12 @@ Public Class Records
             DBOpen()
             Dim command As SqlCommand = New SqlCommand("SELECT * FROM TestTable", connection)
             Dim reader As SqlDataReader = command.ExecuteReader
-            Console.WriteLine("¦Forename       ¦Surname        ¦DoB")
+            Console.WriteLine("ID Forename       Surname        DoB")
             While reader.Read
-                Console.Write("¦")
+                Console.Write(reader(0))
+                Console.Write("  ")
                 Console.Write(reader(1))
-                Console.Write("¦")
                 Console.Write(reader(2))
-                Console.Write("¦")
                 Console.WriteLine((reader(3)).ToShortDateString)
             End While
         Catch ex As Exception
@@ -88,7 +86,7 @@ Public Class Records
             If ValidateUserInput(lastName) = False Then
                 Throw New Exception("Invalid Surname input")
             End If
-            Console.WriteLine("Enter DoB (mm/dd/yyyy):")
+            Console.WriteLine("Enter DoB (dd/mm/yyyy):")
             DoB = Console.ReadLine()
             Try
                 Dim DoBTest = CDate(DoB)
@@ -110,41 +108,60 @@ Public Class Records
     End Sub
 
     'Searchs for a record in the DB based on a column
-    Private Function SearchRecords(input As String, column As String)
-        Dim results As New ArrayList()
-        Dim colName, commandString As String
-        Select Case column
-            Case "f"
-                colName = "ForeName"
-            Case "s"
-                colName = "LastName"
-            Case Else
-                Throw New Exception("Invalid selection")
-        End Select
-        Dim format As String = "SELECT {1} FROM TestTable WHERE {0}{2}{0}"
-        DBOpen()
-        commandString = String.Format(format, Chr(39), colName, input)
-        Dim command As SqlCommand = New SqlCommand(commandString, connection)
-        Dim reader As SqlDataReader = command.ExecuteReader
-        While reader.Read
-            Console.WriteLine(reader(0))
-            'results.Add(reader(0).ToString & reader(1).ToString & reader(2).ToString & reader(3).ToString)
-        End While
-        Return results
-    End Function
-
-    'Deletes a record from the DB
-    Public Sub DeleteRecord()
-        Dim searchTerm As String
+    Public Sub SearchRecords()
         Try
+            Dim results As New ArrayList()
+            Dim colName, commandString, searchTerm As String
             Console.WriteLine("Search using [f]orename or [s]urname?")
             Dim userInput As String = Console.ReadKey.KeyChar
             Console.Beep()
+            Console.WriteLine()
+            Select Case userInput
+                Case "f"
+                    colName = "ForeName"
+                Case "s"
+                    colName = "LastName"
+                Case Else
+                    Throw New Exception("Invalid selection")
+            End Select
+            Console.WriteLine("Enter the " & colName)
             searchTerm = Console.ReadLine()
             If ValidateUserInput(searchTerm) = False Then
                 Throw New Exception("Invalid input")
             End If
-            SearchRecords(searchTerm, userInput)
+            Dim format As String = "SELECT Id, ForeName, LastName, DoB FROM TestTable WHERE {1} = {0}{2}{0}"
+            DBOpen()
+            commandString = String.Format(format, Chr(39), colName, searchTerm)
+            Dim command As SqlCommand = New SqlCommand(commandString, connection)
+            Dim reader As SqlDataReader = command.ExecuteReader
+            While reader.Read
+                Console.Write(reader(0) & " ")
+                Console.Write(reader(1) & " ")
+                Console.Write(reader(2) & " ")
+                Console.WriteLine((reader(3)).ToShortDateString)
+                results.Add(reader(0))
+            End While
+        Catch ex As Exception
+            If Debug Then
+                Console.WriteLine(ex.Message)
+            End If
+        Finally
+            DBClose()
+        End Try
+    End Sub
+
+    'Deletes a record from the DB
+    Public Sub DeleteRecord()
+        Try
+            Console.WriteLine("Enter the ID of the record you want to delete:")
+            Dim idInput As Integer = Console.ReadLine()
+            If ValidateUserInput(idInput.ToString) = False Then
+                Throw New Exception("Invalid ID input")
+            End If
+            Dim deleteQuery As String = "DELETE FROM TestTable WHERE Id = " & idInput
+            DBOpen()
+            Dim command As SqlCommand = New SqlCommand(deleteQuery, connection)
+            command.ExecuteNonQuery()
         Catch ex As Exception
             If Debug Then
                 Console.WriteLine(ex.Message)
@@ -156,7 +173,19 @@ Public Class Records
 
     'Edits a record from the DB
     Public Sub EditRecord()
-
+        Try
+            Console.WriteLine("Enter the ID of the record you want to edit:")
+            Dim idInput As Integer = Console.ReadLine()
+            If ValidateUserInput(idInput.ToString) = False Then
+                Throw New Exception("Invalid ID input")
+            End If
+        Catch ex As Exception
+            If Debug Then
+                Console.WriteLine(ex.Message)
+            End If
+        Finally
+            DBClose()
+        End Try
     End Sub
 
     'Validates userinput and returns true if valid and false if not

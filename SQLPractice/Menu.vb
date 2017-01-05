@@ -6,13 +6,13 @@
     Public Sub TitlePrint()
         Console.Clear()
         TitleLine(TitleLineLength)
-        Console.WriteLine("IIIIII  IIIIII    I          IIIIIII  IIIIIII  IIIIII  IIIIIII")
-        Console.WriteLine("I       I    I    I             I     I        I          I   ")
-        Console.WriteLine("I       I    I    I             I     I        I          I   ")
-        Console.WriteLine("IIIIII  I  I I    I             I     IIIIIII  IIIIII     I   ")
-        Console.WriteLine("     I  I   II    I             I     I             I     I   ")
-        Console.WriteLine("     I  I    II   I             I     I             I     I   ")
-        Console.WriteLine("IIIIII  IIIIII I  IIIIII        I     IIIIIII  IIIIII     I   ")
+        Console.WriteLine("-------QQQQQQQ--QQQQQQQ----Q----------QQQQQQQ--QQQQQQQ--QQQQQQQ--QQQQQQQ-------")
+        Console.WriteLine("-------Q--------Q-----Q----Q-------------Q-----Q--------Q-----------Q----------")
+        Console.WriteLine("-------Q--------Q-----Q----Q-------------Q-----Q--------Q-----------Q----------")
+        Console.WriteLine("-------QQQQQQQ--Q---Q-Q----Q-------------Q-----QQQQQQQ--QQQQQQQ-----Q----------")
+        Console.WriteLine("-------------Q--Q----QQ----Q-------------Q-----Q--------------Q-----Q----------")
+        Console.WriteLine("-------------Q--Q-----QQ---Q-------------Q-----Q--------------Q-----Q----------")
+        Console.WriteLine("-------QQQQQQQ--QQQQQQQ-Q--QQQQQQQ-------Q-----QQQQQQQ--QQQQQQQ-----Q----------")
         TitleLine(TitleLineLength)
     End Sub
 
@@ -33,6 +33,7 @@
         Console.WriteLine("  2. Edit a current record")
         Console.WriteLine("  3. Delete a record")
         Console.WriteLine("  4. Print records")
+        Console.WriteLine("  5. Search records")
         Console.WriteLine("Esc. Exit program")
         TitleLine(TitleLineLength)
     End Sub

@@ -10,6 +10,7 @@
             MainMenu.PrintMenu()
             userInput = Console.ReadKey().KeyChar
             Console.Beep()
+            Console.WriteLine()
             Select Case userInput
                 Case "1"
                     Record.AddRecord()
@@ -19,6 +20,8 @@
                     Record.DeleteRecord()
                 Case "4"
                     Record.PrintRecords()
+                Case "5"
+                    Record.SearchRecords()
                 Case Chr(27)
                     Exit Do
                 Case Else
