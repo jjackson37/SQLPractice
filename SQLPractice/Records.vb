@@ -28,6 +28,7 @@ Public Class Records
         Catch ex As Exception
             Console.WriteLine()
             Console.WriteLine(ex.Message)
+            Console.WriteLine("Press any key to continue...")
             Console.ReadKey()
         End Try
     End Sub
@@ -35,16 +36,17 @@ Public Class Records
     'Closes the DB connection
     Private Sub DBClose()
         Try
-            InitializeConnection()
             connection.Close()
             connection.Dispose()
             If Debug Then
                 Console.WriteLine("-DB Connection closed successfully")
             End If
+            Console.WriteLine("Press any key to continue...")
             Console.ReadKey()
         Catch ex As Exception
             Console.WriteLine()
             Console.WriteLine(ex.Message)
+            Console.WriteLine("Press any key to continue...")
             Console.ReadKey()
         End Try
     End Sub
@@ -102,11 +104,6 @@ Public Class Records
             End If
             Console.WriteLine("Enter DoB (dd/mm/yyyy):")
             DoB = Console.ReadLine()
-            Try
-                Dim DoBTest = CDate(DoB)
-            Catch
-                Throw New Exception("Invalid DoB input")
-            End Try
             Dim format As String = "INSERT INTO TestTable( ForeName, LastName, DoB) VALUES( {0}{1}{0}, {0}{2}{0}, {0}{3}{0})"
             Dim rowInput As String = String.Format(format, Chr(39), foreName, lastName, DoB)
             DBOpen()
@@ -188,11 +185,48 @@ Public Class Records
     'Edits a record from the DB
     Public Sub EditRecord()
         Try
+            Dim queryString, editInput, colEdit As String
             Console.WriteLine("Enter the ID of the record you want to edit:")
             Dim idInput As Integer = Console.ReadLine()
             If ValidateUserInput(idInput.ToString) = False Then
                 Throw New Exception("Invalid ID input")
             End If
+            Dim format As String = "SELECT ForeName, LastName, DoB FROM TestTable WHERE Id = '{0}'"
+            queryString = String.Format(format, idInput)
+            DBOpen()
+            Dim command As SqlCommand = New SqlCommand(queryString, connection)
+            Dim reader As SqlDataReader = command.ExecuteReader
+            Console.WriteLine("Forename:      Surname:       DoB:")
+            While reader.Read
+                Console.WriteLine(reader(0) & reader(1) & reader(2))
+            End While
+            DBClose()
+            Console.WriteLine("Select what you would like to edit")
+            Console.WriteLine("[f]orename, [s]urname or [d]ob")
+            Dim userInput As String = Console.ReadKey.KeyChar
+            Select Case userInput
+                Case "f"
+                    colEdit = "ForeName"
+                Case "s"
+                    colEdit = "LastName"
+                Case "d"
+                    colEdit = "DoB"
+                Case Else
+                    Throw New Exception("Invalid selection")
+            End Select
+            Console.WriteLine()
+            Console.WriteLine("Enter the new value:")
+            editInput = Console.ReadLine()
+            If colEdit <> "DoB" Then
+                If ValidateUserInput(editInput) = False Then
+                    Throw New Exception("Invalid input")
+                End If
+            End If
+            format = "UPDATE TestTable SET {1}='{2}' WHERE Id={0}"
+            queryString = String.Format(format, idInput, colEdit, editInput)
+            DBOpen()
+            Dim command2 As SqlCommand = New SqlCommand(queryString, connection)
+            command2.ExecuteNonQuery()
         Catch ex As Exception
             If Debug Then
                 Console.WriteLine(ex.Message)

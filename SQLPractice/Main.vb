@@ -23,9 +23,11 @@
                 Case "5"
                     Record.SearchRecords()
                 Case Chr(27)
+                    Console.WriteLine("Goodbye!")
                     Exit Do
                 Case Else
                     Console.WriteLine(userInput & " is not a valid input...")
+                    Console.WriteLine("Press any key to continue...")
                     Console.ReadKey()
             End Select
         Loop
