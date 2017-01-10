@@ -11,7 +11,7 @@
             userInput = Console.ReadKey().KeyChar
             Console.Beep()
             Console.WriteLine()
-            Select Case userInput
+            Select Case userInput.ToString
                 Case "1"
                     Record.AddRecord()
                 Case "2"

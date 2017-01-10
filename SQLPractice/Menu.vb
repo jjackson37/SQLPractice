@@ -2,7 +2,9 @@
 
     Private Const TitleLineLength As Integer = 80
 
-    'Text art
+    ''' <summary>
+    ''' Text art
+    ''' </summary>
     Public Sub TitlePrint()
         Console.Clear()
         TitleLine(TitleLineLength)
@@ -16,7 +18,10 @@
         TitleLine(TitleLineLength)
     End Sub
 
-    'Creates a line of / length is a parameter
+    ''' <summary>
+    ''' Creates a line of / length is a parameter
+    ''' </summary>
+    ''' <param name="lineLength">Length of line art</param>
     Private Sub TitleLine(lineLength As Integer)
         Dim i = 1
         While (i < (lineLength - 1))
@@ -26,7 +31,9 @@
         Console.WriteLine("/")
     End Sub
 
-    'Prints the menu into the console
+    ''' <summary>
+    ''' Prints the menu into the console
+    ''' </summary>
     Public Sub PrintMenu()
         Console.WriteLine("Welcome to my SQL test program")
         Console.WriteLine("  1. Add new record")

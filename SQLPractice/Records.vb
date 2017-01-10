@@ -3,21 +3,29 @@
 Public Class Records
 
 #Region "Var and Consts"
-    'The DBConnectionString must be edited to the correct file directory for the program to function
+    ''' <summary>
+    ''' The DBConnectionString must be edited to the correct file directory for the program to function
+    ''' </summary>
     Private Const DBConnectionString As String = "Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""C:\Users\jjackson\Documents\Visual Studio 2015\Projects\SQLPractice\SQLPractice\TestDB.mdf"";Integrated Security=True"
-    'Shows exceptions and messages for DB connections
+    ''' <summary>
+    ''' Shows exceptions and messages for DB connections
+    ''' </summary>
     Private Const Debug As Boolean = True
     Dim connection As SqlConnection
 #End Region
 
 #Region "Methods"
 
-    'Fills connection with the DBConnectionString
+    ''' <summary>
+    ''' Fills connection with the DBConnectionString
+    ''' </summary>
     Private Sub InitializeConnection()
         connection = New SqlConnection(DBConnectionString)
     End Sub
 
-    'Opens the DB connection
+    ''' <summary>
+    ''' Opens the DB connection
+    ''' </summary>
     Private Sub DBOpen()
         Try
             InitializeConnection()
@@ -33,7 +41,9 @@ Public Class Records
         End Try
     End Sub
 
-    'Closes the DB connection
+    ''' <summary>
+    ''' Closes the DB connection
+    ''' </summary>
     Private Sub DBClose()
         Try
             connection.Close()
@@ -51,7 +61,9 @@ Public Class Records
         End Try
     End Sub
 
-    'Prints all records in the DB
+    ''' <summary>
+    ''' Prints all records in the DB
+    ''' </summary>
     Public Sub PrintRecords()
         Try
             Console.WriteLine("Order by [i]d, [f]orename, [s]urname or [d]ate of birth?")
@@ -59,8 +71,6 @@ Public Class Records
             DBOpen()
             Dim command As SqlCommand
             Select Case sortByCol
-                Case "i"
-                    command = New SqlCommand("SELECT * FROM TestTable", connection)
                 Case "f"
                     command = New SqlCommand("SELECT * FROM TestTable ORDER BY ForeName", connection)
                 Case "s"
@@ -77,7 +87,7 @@ Public Class Records
                 Console.Write("  ")
                 Console.Write(reader(1))
                 Console.Write(reader(2))
-                Console.WriteLine((reader(3)).ToShortDateString)
+                Console.WriteLine(CDate(reader(3)).ToShortDateString)
             End While
         Catch ex As Exception
             If Debug Then
@@ -88,7 +98,9 @@ Public Class Records
         End Try
     End Sub
 
-    'Adds a new record into the DB
+    ''' <summary>
+    ''' Adds a new record into the DB
+    ''' </summary>
     Public Sub AddRecord()
         Dim foreName, lastName, DoB As String
         Try
@@ -118,7 +130,9 @@ Public Class Records
         End Try
     End Sub
 
-    'Searchs for a record in the DB based on a column
+    ''' <summary>
+    ''' Searchs for a record in the DB based on a column
+    ''' </summary>
     Public Sub SearchRecords()
         Try
             Dim results As New ArrayList()
@@ -146,10 +160,10 @@ Public Class Records
             Dim command As SqlCommand = New SqlCommand(commandString, connection)
             Dim reader As SqlDataReader = command.ExecuteReader
             While reader.Read
-                Console.Write(reader(0) & " ")
-                Console.Write(reader(1) & " ")
-                Console.Write(reader(2) & " ")
-                Console.WriteLine((reader(3)).ToShortDateString)
+                Console.Write(reader(0).ToString & " ")
+                Console.Write(reader(1).ToString & " ")
+                Console.Write(reader(2).ToString & " ")
+                Console.WriteLine(CDate(reader(3)).ToShortDateString)
                 results.Add(reader(0))
             End While
         Catch ex As Exception
@@ -161,11 +175,13 @@ Public Class Records
         End Try
     End Sub
 
-    'Deletes a record from the DB
+    ''' <summary>
+    ''' Deletes a record from the DB
+    ''' </summary>
     Public Sub DeleteRecord()
         Try
             Console.WriteLine("Enter the ID of the record you want to delete:")
-            Dim idInput As Integer = Console.ReadLine()
+            Dim idInput As Integer = CInt(Console.ReadLine())
             If ValidateUserInput(idInput.ToString) = False Then
                 Throw New Exception("Invalid ID input")
             End If
@@ -182,12 +198,14 @@ Public Class Records
         End Try
     End Sub
 
-    'Edits a record from the DB
+    ''' <summary>
+    ''' Edits a record from the DB
+    ''' </summary>
     Public Sub EditRecord()
         Try
             Dim queryString, editInput, colEdit As String
             Console.WriteLine("Enter the ID of the record you want to edit:")
-            Dim idInput As Integer = Console.ReadLine()
+            Dim idInput As Integer = CInt(Console.ReadLine())
             If ValidateUserInput(idInput.ToString) = False Then
                 Throw New Exception("Invalid ID input")
             End If
@@ -198,7 +216,7 @@ Public Class Records
             Dim reader As SqlDataReader = command.ExecuteReader
             Console.WriteLine("Forename:      Surname:       DoB:")
             While reader.Read
-                Console.WriteLine(reader(0) & reader(1) & reader(2))
+                Console.WriteLine(reader(0).ToString & reader(1).ToString & reader(2).ToString)
             End While
             DBClose()
             Console.WriteLine("Select what you would like to edit")
@@ -236,8 +254,12 @@ Public Class Records
         End Try
     End Sub
 
-    'Validates userinput and returns true if valid and false if not
-    Private Function ValidateUserInput(UserInput As String)
+    ''' <summary>
+    ''' Validates userinput and returns true if valid and false if not
+    ''' </summary>
+    ''' <param name="UserInput">String to validate</param>
+    ''' <returns></returns>
+    Private Function ValidateUserInput(UserInput As String) As Boolean
         Dim Valid As Boolean = True
         If UserInput.Contains(" ") Then
             Valid = False
