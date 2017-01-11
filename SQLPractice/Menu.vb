@@ -1,5 +1,11 @@
-﻿Public Class Menu
+﻿''' <summary>
+''' Contains all everything to do with printing out the main menu
+''' </summary>
+Public Class Menu
 
+    ''' <summary>
+    ''' Width of the lines created in the line art
+    ''' </summary>
     Private Const TitleLineLength As Integer = 80
 
     ''' <summary>

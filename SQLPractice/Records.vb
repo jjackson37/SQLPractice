@@ -1,5 +1,8 @@
 ﻿Imports System.Data.SqlClient
 
+''' <summary>
+''' Contains all the functionality related to the database
+''' </summary>
 Public Class Records
 
 #Region "Var and Consts"
@@ -255,18 +258,18 @@ Public Class Records
     End Sub
 
     ''' <summary>
-    ''' Validates userinput and returns true if valid and false if not
+    ''' Validates a user input and returns true if valid and false if not
     ''' </summary>
     ''' <param name="UserInput">String to validate</param>
-    ''' <returns></returns>
-    Private Function ValidateUserInput(UserInput As String) As Boolean
-        Dim Valid As Boolean = True
-        If UserInput.Contains(" ") Then
-            Valid = False
-        ElseIf UserInput = "" Then
-            Valid = False
+    ''' <returns>Boolean equal to if the UserInput passes the validation</returns>
+    Private Function ValidateUserInput(userInput As String) As Boolean
+        Dim valid As Boolean = True
+        If userInput.Contains(" ") Then
+            valid = False
+        ElseIf userInput = "" Then
+            valid = False
         End If
-        Return Valid
+        Return valid
     End Function
 
 #End Region

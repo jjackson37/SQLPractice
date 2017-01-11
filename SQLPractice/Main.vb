@@ -1,5 +1,9 @@
 ﻿Module Main
 
+    ''' <summary>
+    ''' Main. Uses select case to run different subroutines from the records class depending on
+    ''' user input.
+    ''' </summary>
     Sub Main()
         Console.BufferHeight() = 2600
         Dim MainMenu As New Menu()
